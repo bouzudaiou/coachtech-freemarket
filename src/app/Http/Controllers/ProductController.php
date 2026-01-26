@@ -29,7 +29,7 @@ class ProductController extends Controller
         // 検索機能：キーワードが入力されている場合、商品名で部分一致検索
         if ($request->input('keyword')) {
             $keyword = $request->input('keyword');
-            $query->where('name', 'like', "%{$keyword}%");
+            $query->where('name', 'like', "%$keyword%");
         }
 
         // ここで初めてDBに問い合わせを実行し、条件に合う商品を取得
@@ -41,8 +41,8 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        // 商品情報を取得
-        $product = Product::find($id);
+        // 商品情報を取得（見つからない場合は404エラー）
+        $product = Product::findOrFail($id);
 
         // コメント一覧を取得
         $comments = $product->comments;
@@ -51,10 +51,10 @@ class ProductController extends Controller
         $categories = $product->categories;
 
         // いいね件数を取得
-        $likeCount = $product->likes()->count();
+        $likeCount = $product->likedUsers()->count();
 
         // ログインユーザーがいいね済みかどうかを判定
-        $isLiked = $product->likes()->where('user_id', '=', auth()->id())->exists();
+        $isLiked = $product->likedUsers()->where('user_id', '=', auth()->id())->exists();
 
         // ビューに全てのデータを渡す
         return view('products.show', compact('product', 'comments', 'categories', 'likeCount', 'isLiked'));

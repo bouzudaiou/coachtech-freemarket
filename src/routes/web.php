@@ -29,3 +29,6 @@ Route::get('/mypage/profile', [MypageController::class, 'edit']);
 
 // プロフィール更新
 Route::post('/mypage/profile', [MypageController::class, 'update']);
+
+//いいね
+Route::post('/item/{id}/like', [LikeController::class, 'toggle']);
