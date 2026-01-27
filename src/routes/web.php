@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MypageController;
@@ -32,3 +33,6 @@ Route::post('/mypage/profile', [MypageController::class, 'update']);
 
 //いいね
 Route::post('/item/{id}/like', [LikeController::class, 'toggle']);
+
+//コメント投稿
+Route::post('/item/{id}/comment', [CommentController::class, 'store']);
