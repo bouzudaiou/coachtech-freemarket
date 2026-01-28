@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MypageController;
@@ -44,6 +45,12 @@ Route::get('/purchase/address/{id}', [OrderController::class, 'edit']);
 //送付先住所更新
 Route::post('/purchase/address/{id}', [OrderController::class, 'update']);
 
+//購入処理
+Route::post('/purchase/{id}', [OrderController::class, 'store']);
+
 //コメント投稿
 Route::post('/item/{id}/comment', [CommentController::class, 'store']);
 
+//
+Route::get('/sell', [ProductController::class, 'create'])->name('products.create');
+Route::post('/sell', [ProductController::class, 'store'])->name('products.store');

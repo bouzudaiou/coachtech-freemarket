@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PurchaseRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,7 @@ class OrderController extends Controller
         return redirect('/purchase/' . $id);
     }
 
-    public function store(Request $request, $id)
+    public function store(PurchaseRequest $request, $id)
     {
         // 商品情報を取得
         $product = Product::find($id);
@@ -45,11 +46,16 @@ class OrderController extends Controller
         $user = auth()->user();
         // セッションから住所を取得
         $address = session('address', $user->address);
-        // バリデーション
         //商品のis_soldをtrueに更新
         $product->is_sold = true;
         $product->save();
         // ここに購入処理を書く（Stripe連携など）
+        Order::create([
+            'user_id' => $user->id,
+            'product_id' => $id,
+            'address' => $address,
+            'payment_method' => $request->payment_method,
+        ]);
         // セッションを削除
         session()->forget('address');
         // リダイレクト

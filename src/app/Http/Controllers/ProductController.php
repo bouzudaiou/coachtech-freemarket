@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ExhibitionRequest;
 use App\Models\Product;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -58,5 +60,37 @@ class ProductController extends Controller
 
         // ビューに全てのデータを渡す
         return view('products.show', compact('product', 'comments', 'categories', 'likeCount', 'isLiked'));
+    }
+
+    public function create(Request $request)
+    {
+        // 全カテゴリーを取得
+        $categories = Category::all();
+
+        // ビューへ渡す
+        return view('products.create', compact('categories'));
+    }
+
+    public function store(ExhibitionRequest $request)
+    {
+        // 画像を保存
+        $path = $request->file('image_path')->store('products', 'public');
+
+        // 必要な情報を集めて保存
+        $product = Product::create([
+            'user_id' => auth()->id(),
+            'image_path' => $path,
+            'name' => $request->get('name'),
+            'brand' => $request->get('brand'),
+            'description' => $request->get('description'),
+            'condition' => $request->get('condition'),
+            'price' => $request->get('price'),
+        ]);
+
+        // カテゴリーの関連付け
+        $product->categories()->attach([$request->get('category_id')]);
+
+        // viewの表示
+        return redirect('/');
     }
 }
