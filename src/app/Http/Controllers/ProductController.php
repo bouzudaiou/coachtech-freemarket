@@ -59,5 +59,4 @@ class ProductController extends Controller
         // ビューに全てのデータを渡す
         return view('products.show', compact('product', 'comments', 'categories', 'likeCount', 'isLiked'));
     }
-
 }
