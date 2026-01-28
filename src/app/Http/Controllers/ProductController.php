@@ -88,7 +88,7 @@ class ProductController extends Controller
         ]);
 
         // カテゴリーの関連付け
-        $product->categories()->attach([$request->get('category_id')]);
+        $product->categories()->attach($request->get('category_id'));
 
         // viewの表示
         return redirect('/');

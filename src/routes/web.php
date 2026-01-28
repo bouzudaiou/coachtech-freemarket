@@ -51,6 +51,8 @@ Route::post('/purchase/{id}', [OrderController::class, 'store']);
 //コメント投稿
 Route::post('/item/{id}/comment', [CommentController::class, 'store']);
 
-//
+//出品情報入力画面の表示
 Route::get('/sell', [ProductController::class, 'create'])->name('products.create');
+
+//出品処理
 Route::post('/sell', [ProductController::class, 'store'])->name('products.store');
