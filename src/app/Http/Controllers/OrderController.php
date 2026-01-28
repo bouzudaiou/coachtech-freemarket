@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Stripe\Stripe;
+use Stripe\Charge;
 use App\Http\Requests\PurchaseRequest;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -42,24 +45,44 @@ class OrderController extends Controller
     {
         // 商品情報を取得
         $product = Product::find($id);
+
         // ログインユーザーを取得
         $user = auth()->user();
+
         // セッションから住所を取得
         $address = session('address', $user->address);
-        //商品のis_soldをtrueに更新
-        $product->is_sold = true;
-        $product->save();
-        // ここに購入処理を書く（Stripe連携など）
+
+        // Stripe決済処理
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        try {
+            $charge = Charge::create([
+                'amount' => $product->price,
+                'currency' => 'jpy',
+                'source' => 'tok_visa', // テストカードトークン
+                'description' => $product->name . 'の購入',
+            ]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['payment' => '決済に失敗しました']);
+        }
+
+        // 決済成功後、注文データを保存
         Order::create([
             'user_id' => $user->id,
             'product_id' => $id,
             'address' => $address,
             'payment_method' => $request->payment_method,
         ]);
+
+        // 商品のis_soldをtrueに更新
+        $product->is_sold = true;
+        $product->save();
+
         // セッションを削除
         session()->forget('address');
+
         // リダイレクト
         return redirect('/');
-
     }
+
 }
