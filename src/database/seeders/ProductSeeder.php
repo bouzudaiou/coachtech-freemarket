@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
         $products = [
             [
                 'user_id' => 1,
-                'image_path' => 'udetokei.png',
+                'image_path' => 'products/udetokei.jpg',
                 'condition' => '良好',
                 'name' => 'udetokei',
                 'brand' => 'Rolax',
@@ -26,7 +26,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'HDD.png',
+                'image_path' => 'products/HDD.jpg',
                 'condition' => '目立った傷や汚れなし',
                 'name' => 'HDD',
                 'brand' => '西芝',
@@ -36,7 +36,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'tamanegi.png',
+                'image_path' => 'products/tamanegi.jpg',
                 'condition' => 'やや傷や汚れあり',
                 'name' => '玉ねぎ3束',
                 'brand' => 'なし',
@@ -46,7 +46,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'kawagutu.png',
+                'image_path' => 'products/kawagutu.jpg',
                 'condition' => '状態が悪い',
                 'name' => '革靴',
                 'brand' => null,
@@ -56,7 +56,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'notepc.png',
+                'image_path' => 'products/notepc.jpg',
                 'condition' => '良好',
                 'name' => 'ノートPC',
                 'brand' => null,
@@ -66,7 +66,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'microphone.png',
+                'image_path' => 'products/microphone.jpg',
                 'condition' => '目立った傷や汚れなし',
                 'name' => 'マイク',
                 'brand' => 'なし',
@@ -76,7 +76,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'shoulderbag.png',
+                'image_path' => 'products/shoulderbag.jpg',
                 'condition' => 'やや傷や汚れあり',
                 'name' => 'ショルダーバッグ',
                 'brand' => null,
@@ -86,7 +86,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'tumbler.png',
+                'image_path' => 'products/tumbler.jpg',
                 'condition' => '状態が悪い',
                 'name' => 'タンブラー',
                 'brand' => 'なし',
@@ -96,7 +96,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'coffeegrinder.png',
+                'image_path' => 'products/coffeegrinder.jpg',
                 'condition' => '良好',
                 'name' => 'コーヒーミル',
                 'brand' => 'Starbacks',
@@ -106,7 +106,7 @@ class ProductSeeder extends Seeder
 
             [
                 'user_id' => 1,
-                'image_path' => 'makeupset.png',
+                'image_path' => 'products/makeupset.jpg',
                 'condition' => '目立った傷や汚れなし',
                 'name' => 'メイクセット',
                 'brand' => null,
