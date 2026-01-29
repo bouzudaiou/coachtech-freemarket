@@ -70,7 +70,7 @@
     <div class="auth-container">
         <h1 class="auth-title">会員登録</h1>
 
-        <form action="/register" method="POST">
+        <form action="/register" method="POST" novalidate>
             @csrf
 
             <!-- ユーザー名 -->

@@ -67,10 +67,10 @@
         }
     </style>
 
-    <div class="auth-container">
+    <div class="auth-container" >
         <h1 class="auth-title">ログイン</h1>
 
-        <form action="/login" method="POST">
+        <form action="/login" method="POST" novalidate>
             @csrf
 
             <!-- メールアドレス -->

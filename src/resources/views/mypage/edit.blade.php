@@ -72,7 +72,7 @@
     <div class="profile-form-container">
         <h1 class="profile-form-title">プロフィール設定</h1>
 
-        <form action="/mypage/profile" method="POST" enctype="multipart/form-data">
+        <form action="/mypage/profile" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
 
             <!-- プロフィール画像プレビュー -->

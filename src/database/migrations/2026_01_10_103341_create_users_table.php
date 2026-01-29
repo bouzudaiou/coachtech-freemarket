@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('profile_image_path')->nullable();
-            $table->string('postal_code');
-            $table->string('address');
+            $table->string('postal_code')->nullable();
+            $table->string('address')->nullable();
             $table->string('building')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

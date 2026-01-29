@@ -118,7 +118,7 @@
             <!-- 支払い方法 -->
             <div class="purchase-section">
                 <h3 class="section-title">支払い方法</h3>
-                <form action="/purchase/{{ $product->id }}" method="POST" id="purchase-form">
+                <form action="/purchase/{{ $product->id }}" method="POST" id="purchase-form" novalidate>
                     @csrf
                     <div class="payment-method">
                         <label class="payment-option">

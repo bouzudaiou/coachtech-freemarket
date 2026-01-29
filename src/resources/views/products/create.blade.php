@@ -101,7 +101,7 @@
     <div class="form-container">
         <h1 class="form-title">商品の出品</h1>
 
-        <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
 
             <!-- 商品画像 -->

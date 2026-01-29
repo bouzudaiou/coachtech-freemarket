@@ -58,7 +58,7 @@
     <div class="address-form-container">
         <h1 class="address-form-title">配送先の変更</h1>
 
-        <form action="/purchase/address/{{ $product->id }}" method="POST">
+        <form action="/purchase/address/{{ $product->id }}" method="POST" novalidate>
             @csrf
 
             <!-- 郵便番号 -->

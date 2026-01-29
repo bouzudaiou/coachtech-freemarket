@@ -170,7 +170,7 @@
 
             <!-- いいね・コメント -->
             <div class="product-actions">
-                <form action="/item/{{ $product->id }}/like" method="POST" style="display: inline;">
+                <form action="/item/{{ $product->id }}/like" method="POST" style="display: inline;" novalidate>
                     @csrf
                     <button type="submit" class="action-btn">
                         @if($product->likedUsers->contains(auth()->id()))
