@@ -23,14 +23,14 @@ class ProductController extends Controller
         // タブ切り替え：マイリストタブの場合、ログインユーザーがいいねした商品のみ表示
         $tab = $request->input('tab');
         if ($tab == 'mylist') {
-            $query->whereHas('likes', function ($q) {
+            $query->whereHas('likedUsers', function ($q) {
                 $q->where('user_id', '=', auth()->id());
             });
         }
 
         // 検索機能：キーワードが入力されている場合、商品名で部分一致検索
-        if ($request->input('keyword')) {
-            $keyword = $request->input('keyword');
+        $keyword = $request->input('keyword');
+        if ($keyword) {
             $query->where('name', 'like', "%$keyword%");
         }
 
@@ -38,7 +38,7 @@ class ProductController extends Controller
         $products = $query->get();
 
         // ビューに商品データを渡して表示
-        return view('products.index', compact('products'));
+        return view('products.index', compact('products', 'tab', 'keyword'));
     }
 
     public function show($id)

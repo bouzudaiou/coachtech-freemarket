@@ -25,7 +25,7 @@ class ExhibitionRequest extends FormRequest
             'name' => 'required',
             'description' => 'required|string|max:255',
             'image_path' => 'required|image|mimes:jpeg,png',
-            'catetory_id' => 'required|exists:categories,id',
+            'category_id' => 'required|exists:categories,id',
             'condition' => 'required|in:良好,目立った傷や汚れなし,やや傷や汚れあり,状態が悪い',
             'price' => 'required|numeric|min:0',
         ];
@@ -35,12 +35,12 @@ class ExhibitionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name' => '選択必須',
+            'name.required' => '選択必須',
             'description.required' => '入力必須',
-            'description.max255' => '最大文字数255',
+            'description.max' => '最大文字数255',
             'image_path.required' => 'アップロード必須',
             'image_path.mimes' => '拡張子が.jpegもしくは.png',
-            'catetory_id.required' => '選択必須',
+            'category_id.required' => '選択必須',
             'condition.required' => '選択必須',
             'price.required' => '入力必須',
             'price.numeric' => '数値型',

@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Stripe\Stripe;
 use Stripe\Charge;
 use App\Http\Requests\PurchaseRequest;
+use App\Http\Requests\AddressRequest;
 use App\Models\Order;
 use App\Models\Product;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -15,7 +15,11 @@ class OrderController extends Controller
     {
         $product = Product::find($id);
         $user = auth()->user();
-        $address = session('address', $user->address);
+        $address = session('address', [
+            'postal_code' => $user->postal_code,
+            'address' => $user->address,
+            'building' => $user->building,
+        ]);
 
         return view('orders.create', compact('product', 'user', 'address'));
     }
@@ -27,15 +31,23 @@ class OrderController extends Controller
         // ログインユーザーを取得
         $user = auth()->user();
         // セッションから住所を取得（なければプロフィールの住所）
-        $address = session('address', $user->address);
+        $address = session('address', [
+            'postal_code' => $user->postal_code,
+            'address' => $user->address,
+            'building' => $user->building,
+        ]);
 
         // 送付先変更画面のビューを返す
-        return view('orders.edit', compact('product','address'));
+        return view('orders.edit', compact('product', 'address'));
     }
 
-    public function update(Request $request, $id)
+    public function update(AddressRequest $request, $id)
     {
-        $address = $request->input('address');
+        $address = [
+            'postal_code' => $request->postal_code,
+            'address' => $request->address,
+            'building' => $request->building,
+        ];
         $request->session()->put('address', $address);
 
         return redirect('/purchase/' . $id);
@@ -49,8 +61,12 @@ class OrderController extends Controller
         // ログインユーザーを取得
         $user = auth()->user();
 
-        // セッションから住所を取得
-        $address = session('address', $user->address);
+        // セッションから住所を取得（なければプロフィールの住所）
+        $address = session('address', [
+            'postal_code' => $user->postal_code,
+            'address' => $user->address,
+            'building' => $user->building,
+        ]);
 
         // Stripe決済処理
         Stripe::setApiKey(config('services.stripe.secret'));
@@ -70,7 +86,9 @@ class OrderController extends Controller
         Order::create([
             'user_id' => $user->id,
             'product_id' => $id,
-            'address' => $address,
+            'postal_code' => $address['postal_code'],
+            'address' => $address['address'],
+            'building' => $address['building'],
             'payment_method' => $request->payment_method,
         ]);
 

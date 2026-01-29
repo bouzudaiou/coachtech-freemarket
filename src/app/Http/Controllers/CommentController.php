@@ -14,12 +14,12 @@ class CommentController extends Controller
         //コメントをcommentsテーブルに保存
         Comment::create([
             'user_id' => $user->id,
-            'item_id' => $id,
+            'product_id' => $id,
             'content' => $request->content,
         ]);
 
         //商品詳細ページ（/item/{id}）にリダイレクト
-        return redirect('item/' . $id);
+        return redirect('/item/' . $id);
 
     }
 }
