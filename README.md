@@ -142,17 +142,9 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
 ## ER図
-```
-users ||--o{ products : "出品"
-users ||--o{ likes : "いいね"
-users ||--o{ comments : "コメント"
-users ||--o{ orders : "購入"
-products ||--o{ likes : "いいね"
-products ||--o{ comments : "コメント"
-products ||--o{ category_products : "カテゴリ"
-products ||--o{ orders : "注文"
-categories ||--o{ category_products : "商品"
-```
+![ER図](er-diag<img width="840" height="581" alt="er-diagram" src="https://github.com/user-attachments/assets/7a980ed4-e026-4cef-9394-696b546330ab" />
+ram.png)
+
 
 ## 環境構築手順
 
@@ -162,7 +154,8 @@ categories ||--o{ category_products : "商品"
 
 ### 1. リポジトリのクローン
 ```bash
-git clone <リポジトリURL>
+git clone <リポジトリURL>![Uploading er-diagram.png…]()
+
 cd coachtech-freemarket
 ```
 
