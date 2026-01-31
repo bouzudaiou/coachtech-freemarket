@@ -52,7 +52,7 @@ class MypageController extends Controller
         ]);
 
         // マイページにリダイレクト
-        return redirect('/mypage');
+        return redirect('/');
     }
 
     public function edit()
