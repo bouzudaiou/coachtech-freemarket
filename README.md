@@ -20,7 +20,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 
 ### 商品機能
 - 商品一覧表示
-- 商品詳細表示（商品名で認証が必要な検索）
+- 商品詳細表示
 - 商品検索
 - 商品出品
 - いいね機能
@@ -39,8 +39,8 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 ## 使用技術
 
 ### バックエンド
-- PHP 8.3
-- Laravel 11.x
+- PHP 8.1以上
+- Laravel 10.x
 - Laravel Fortify（認証）
 
 ### フロントエンド
@@ -49,7 +49,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 - JavaScript
 
 ### データベース
-- MySQL 8.0
+- MySQL 8.0.26
 
 ### 開発環境
 - Docker
@@ -69,11 +69,12 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 | name | VARCHAR(255) | NOT NULL | ユーザー名 |
 | email | VARCHAR(255) | NOT NULL, UNIQUE | メールアドレス |
 | password | VARCHAR(255) | NOT NULL | パスワード |
-| postal_code | VARCHAR(8) | NULLABLE | 郵便番号 |
-| address | TEXT | NULLABLE | 住所 |
+| profile_image_path | VARCHAR(255) | NULLABLE | プロフィール画像パス |
+| postal_code | VARCHAR(255) | NULLABLE | 郵便番号 |
+| address | VARCHAR(255) | NULLABLE | 住所 |
 | building | VARCHAR(255) | NULLABLE | 建物名 |
-| profile_image | VARCHAR(255) | NULLABLE | プロフィール画像パス |
 | email_verified_at | TIMESTAMP | NULLABLE | メール認証日時 |
+| remember_token | VARCHAR(100) | NULLABLE | ログイン状態保持トークン |
 | created_at | TIMESTAMP | NOT NULL | 作成日時 |
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
@@ -82,12 +83,13 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 |---------|-----|------|------|
 | id | BIGINT UNSIGNED | PRIMARY KEY | 商品ID |
 | user_id | BIGINT UNSIGNED | NOT NULL, FOREIGN KEY | 出品者ID |
+| image_path | VARCHAR(255) | NOT NULL | 商品画像パス |
+| condition | ENUM | NOT NULL | 商品の状態（'良好', '目立った傷や汚れなし', 'やや傷や汚れあり', '状態が悪い'） |
 | name | VARCHAR(255) | NOT NULL | 商品名 |
 | brand | VARCHAR(255) | NULLABLE | ブランド名 |
-| price | DECIMAL(10,2) | NOT NULL | 価格 |
 | description | TEXT | NOT NULL | 商品説明 |
-| image_path | VARCHAR(255) | NOT NULL | 商品画像パス |
-| condition | VARCHAR(50) | NOT NULL | 商品の状態 |
+| price | INT UNSIGNED | NOT NULL | 価格（整数、円単位） |
+| is_sold | BOOLEAN | NOT NULL, DEFAULT FALSE | 売却済みフラグ |
 | created_at | TIMESTAMP | NOT NULL | 作成日時 |
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
@@ -95,7 +97,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 | カラム名 | 型 | 制約 | 説明 |
 |---------|-----|------|------|
 | id | BIGINT UNSIGNED | PRIMARY KEY | カテゴリID |
-| name | VARCHAR(255) | NOT NULL | カテゴリ名 |
+| name | VARCHAR(255) | NOT NULL, UNIQUE | カテゴリ名 |
 | created_at | TIMESTAMP | NOT NULL | 作成日時 |
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
@@ -133,9 +135,9 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 | id | BIGINT UNSIGNED | PRIMARY KEY | 注文ID |
 | user_id | BIGINT UNSIGNED | NOT NULL, FOREIGN KEY | 購入者ID |
 | product_id | BIGINT UNSIGNED | NOT NULL, FOREIGN KEY | 商品ID |
-| payment_method | VARCHAR(50) | NOT NULL | 支払い方法 |
-| postal_code | VARCHAR(8) | NOT NULL | 配送先郵便番号 |
-| address | TEXT | NOT NULL | 配送先住所 |
+| payment_method | ENUM | NOT NULL | 支払い方法（'コンビニ払い', 'カード払い'） |
+| postal_code | VARCHAR(255) | NOT NULL | 配送先郵便番号 |
+| address | VARCHAR(255) | NOT NULL | 配送先住所 |
 | building | VARCHAR(255) | NULLABLE | 配送先建物名 |
 | created_at | TIMESTAMP | NOT NULL | 作成日時 |
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
@@ -164,15 +166,15 @@ cp .env.example .env
 以下の項目を適切に編集してください：
 
 ```
-APP_NAME="coachtech フリマ"
+APP_NAME=Laravel
 APP_URL=http://localhost
 
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=sail
-DB_PASSWORD=password
+DB_DATABASE=freemarket_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=laravel_pass
 
 MAIL_MAILER=smtp
 MAIL_HOST=mailpit
@@ -181,6 +183,8 @@ MAIL_PORT=1025
 STRIPE_PUBLIC_KEY=<Stripeの公開鍵>
 STRIPE_SECRET_KEY=<Stripeの秘密鍵>
 ```
+
+※データベース設定はDocker Compose環境を前提としています。DB_HOSTの`mysql`はdocker-compose.ymlで定義されているサービス名です。
 
 ### 4. Dockerコンテナの起動
 ```bash
@@ -225,10 +229,12 @@ php artisan storage:link
 ## テストアカウント
 
 ### テストユーザー
-- メールアドレス: test@example.com
-- パスワード: password123
+- ユーザー名: taro
+- メールアドレス: taro@abc.com
+- パスワード: 123abc
+- 登録住所: 〒123-4567 東京都渋谷区1-2-3
 
-※シーダーで作成された商品データが10件登録されています
+※このユーザーが出品した商品データが10件登録されています
 
 ## 開発者向け情報
 
