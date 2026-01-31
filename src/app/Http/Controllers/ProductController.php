@@ -21,8 +21,8 @@ class ProductController extends Controller
         }
 
         // タブ切り替え：マイリストタブの場合、ログインユーザーがいいねした商品のみ表示
-        $page = $request->input('page','all');
-        if ($page == 'mylist') {
+        $tab = $request->input('tab','recommend');
+        if ($tab == 'mylist') {
             $query->whereHas('likedUsers', function ($q) {
                 $q->where('user_id', '=', auth()->id());
             });
@@ -38,7 +38,7 @@ class ProductController extends Controller
         $products = $query->get();
 
         // ビューに商品データを渡して表示
-        return view('products.index', compact('products', 'page', 'keyword'));
+        return view('products.index', compact('products', 'tab', 'keyword'));
     }
 
     public function show($id)

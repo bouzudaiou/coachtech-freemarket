@@ -60,11 +60,6 @@ class MypageController extends Controller
         // ログインユーザー情報を取得
         $user = auth()->user();
 
-        // プロフィールが既に設定済みの場合はトップページへリダイレクト
-        if ($user->postal_code && $user->address) {
-            return redirect('/');
-        }
-
         return view('mypage.edit', compact('user'));
     }
 }

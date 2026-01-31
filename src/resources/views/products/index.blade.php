@@ -1,157 +1,159 @@
 @extends('layouts.app')
 
-@section('title', '商品一覧 - COACHTECH')
+@section('title', 'COACHTECH')
 
 @section('content')
     <style>
-        /* タブ切り替え */
-        .tabs {
+        .products-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* タブナビゲーション */
+        .products-tabs {
             display: flex;
-            gap: 40px;
-            margin-bottom: 40px;
+            gap: 32px;
+            margin-bottom: 32px;
             border-bottom: 1px solid #ddd;
         }
 
-        .tab {
-            padding: 10px 0;
+        .products-tab {
+            padding: 12px 0;
             cursor: pointer;
             border: none;
             background: none;
             font-size: 16px;
-            color: #888;
+            color: #666;
             position: relative;
             text-decoration: none;
-            display: inline-block;
         }
 
-        .tab.active {
-            color: #ff0000;
+        .products-tab.active {
+            color: #000;
             font-weight: bold;
         }
 
-        .tab.active::after {
+        .products-tab.active::after {
             content: '';
             position: absolute;
             bottom: -1px;
             left: 0;
             right: 0;
-            height: 2px;
-            background-color: #ff0000;
-        }
-
-        .tab:not(.active):hover {
-            color: #333;
+            height: 3px;
+            background-color: #ff4444;
         }
 
         /* 商品グリッド */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 40px 30px;
+            gap: 32px;
         }
 
         .product-card {
             text-decoration: none;
             color: #333;
-            position: relative;
-            display: block;
+        }
+
+        .product-card:hover {
+            opacity: 0.8;
         }
 
         .product-image-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 100%; /* 正方形 */
-            background-color: #d3d3d3;
+            aspect-ratio: 1;
+            margin-bottom: 12px;
+        }
+
+        /* Soldラベル */
+        .sold-label {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: #ff4444;
+            color: #fff;
+            padding: 6px 16px;
             border-radius: 4px;
-            overflow: hidden;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1;
         }
 
         .product-image {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .product-info {
-            padding: 10px 0;
+            background-color: #f0f0f0;
         }
 
         .product-name {
             font-size: 14px;
-            color: #000;
+            line-height: 1.4;
         }
 
-        /* SOLD表示 */
-        .sold-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-        }
-
-        .sold-label {
-            background-color: #ff0000;
-            color: #fff;
-            padding: 8px 30px;
-            border-radius: 4px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        /* 商品がない場合 */
         .no-products {
             text-align: center;
-            padding: 80px 20px;
-            color: #888;
+            padding: 60px 0;
+            color: #999;
             font-size: 16px;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
         }
     </style>
 
-    <!-- タブ切り替え -->
-    <div class="tabs">
-        <a href="/?page=all" class="tab {{ (!isset($page) || $page === 'all') ? 'active' : '' }}">
-            おすすめ
-        </a>
-        @auth
-            <a href="/?page=mylist" class="tab {{ (isset($page) && $page === 'mylist') ? 'active' : '' }}">
-                マイリスト
-            </a>
-        @endauth
-    </div>
-
-    <!-- 商品一覧 -->
-    @if($products->count() > 0)
-        <div class="products-grid">
-            @foreach($products as $product)
-                <a href="/item/{{ $product->id }}" class="product-card">
-                    <div class="product-image-wrapper">
-                        <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" class="product-image">
-
-                        @if($product->is_sold)
-                            <div class="sold-overlay">
-                                <div class="sold-label">Sold</div>
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="product-info">
-                        <div class="product-name">{{ $product->name }}</div>
-                    </div>
+    <div class="products-container">
+        <!-- タブナビゲーション -->
+        <div class="products-tabs">
+            @auth
+                <a href="{{ route('products.index', ['tab' => 'recommend']) }}"
+                   class="products-tab {{ $tab === 'recommend' ? 'active' : '' }}">
+                    おすすめ
                 </a>
-            @endforeach
+                <a href="{{ route('products.index', ['tab' => 'mylist']) }}"
+                   class="products-tab {{ $tab === 'mylist' ? 'active' : '' }}">
+                    マイリスト
+                </a>
+            @else
+                <a href="{{ route('products.index', ['tab' => 'recommend']) }}"
+                   class="products-tab active">
+                    おすすめ
+                </a>
+            @endauth
         </div>
-    @else
-        <div class="no-products">
-            商品がありません
+
+        <!-- 商品グリッド -->
+        <div class="products-grid">
+            @forelse($products as $product)
+                <a href="{{ route('item.show', $product->id) }}" class="product-card">
+                    <div class="product-image-wrapper">
+                        <!-- Soldラベル -->
+                        @if($product->is_sold)
+                            <div class="sold-label">Sold</div>
+                        @endif
+
+                        <img src="{{ Storage::url($product->image_path) }}"
+                             alt="{{ $product->name }}"
+                             class="product-image">
+                    </div>
+                    <div class="product-name">{{ $product->name }}</div>
+                </a>
+            @empty
+                <div class="no-products">商品がありません</div>
+            @endforelse
         </div>
-    @endif
+    </div>
 @endsection

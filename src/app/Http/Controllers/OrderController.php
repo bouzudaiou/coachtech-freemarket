@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Stripe\Stripe;
-use Stripe\Charge;
+use Illuminate\Http\Request;
 use App\Http\Requests\PurchaseRequest;
 use App\Http\Requests\AddressRequest;
 use App\Models\Order;
@@ -68,39 +67,100 @@ class OrderController extends Controller
             'building' => $user->building,
         ]);
 
-        // Stripe決済処理
-        Stripe::setApiKey(config('services.stripe.secret'));
+        // Stripe初期化
+        \Stripe\Stripe::setApiKey(config('stripe.secret_key'));
 
         try {
-            $charge = Charge::create([
-                'amount' => $product->price,
-                'currency' => 'jpy',
-                'source' => 'tok_visa', // テストカードトークン
-                'description' => $product->name . 'の購入',
+            // Checkout セッションを作成
+            $session = \Stripe\Checkout\Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'jpy',
+                        'product_data' => [
+                            'name' => $product->name,
+                        ],
+                        'unit_amount' => $product->price,
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'success_url' => route('purchase.success', ['product_id' => $id]),
+                'cancel_url' => route('purchase.cancel', ['product_id' => $id]),
+                'metadata' => [
+                    'user_id' => $user->id,
+                    'product_id' => $id,
+                    'postal_code' => $address['postal_code'],
+                    'address' => $address['address'],
+                    'building' => $address['building'] ?? '',
+                    'payment_method' => $request->payment_method,
+                ],
             ]);
+
+            // セッションIDとその他の情報をセッションに保存
+            session([
+                'checkout_session_id' => $session->id,
+                'order_data' => [
+                    'user_id' => $user->id,
+                    'product_id' => $id,
+                    'postal_code' => $address['postal_code'],
+                    'address' => $address['address'],
+                    'building' => $address['building'] ?? '',
+                    'payment_method' => $request->payment_method,
+                ],
+            ]);
+
+            // StripeのCheckoutページへリダイレクト
+            return redirect($session->url);
+
         } catch (\Exception $e) {
-            return back()->withErrors(['payment' => '決済に失敗しました']);
+            return redirect()->route('purchase.show', $id)->withErrors(['payment' => '決済に失敗しました:' . $e->getMessage()]);
+        }
+    }
+
+    // 決済成功時の処理
+    public function success(Request $request)
+    {
+        // セッションから注文データを取得
+        $orderData = session('order_data');
+        $productId = $request->query('product_id');
+
+        if (!$orderData) {
+            return redirect('/')->with('error', '注文データが見つかりません');
         }
 
-        // 決済成功後、注文データを保存
+        // 注文をデータベースに保存
         Order::create([
-            'user_id' => $user->id,
-            'product_id' => $id,
-            'postal_code' => $address['postal_code'],
-            'address' => $address['address'],
-            'building' => $address['building'],
-            'payment_method' => $request->payment_method,
+            'user_id' => $orderData['user_id'],
+            'product_id' => $productId,
+            'postal_code' => $orderData['postal_code'],
+            'address' => $orderData['address'],
+            'building' => $orderData['building'],
+            'payment_method' => $orderData['payment_method'],
         ]);
 
-        // 商品のis_soldをtrueに更新
+        // 商品をis_sold = trueに更新
+        $product = Product::find($productId);
         $product->is_sold = true;
         $product->save();
 
-        // セッションを削除
-        session()->forget('address');
+        // セッションをクリア
+        session()->forget(['order_data', 'checkout_session_id', 'address']);
 
-        // リダイレクト
-        return redirect('/');
+        // 商品一覧にリダイレクト
+        return redirect('/')->with('success', '購入が完了しました');
+    }
+
+// 決済キャンセル時の処理
+    public function cancel(Request $request)
+    {
+        $productId = $request->query('product_id');
+
+        // セッションをクリア
+        session()->forget(['order_data', 'checkout_session_id']);
+
+        // 購入画面に戻る
+        return redirect()->route('purchase.show', $productId)->with('error', '決済がキャンセルされました');
     }
 
 }

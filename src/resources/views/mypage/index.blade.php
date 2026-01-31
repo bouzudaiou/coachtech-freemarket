@@ -4,70 +4,89 @@
 
 @section('content')
     <style>
+        .mypage-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
         .mypage-header {
             display: flex;
             align-items: center;
-            gap: 20px;
-            margin-bottom: 40px;
+            gap: 32px;
+            margin-bottom: 48px;
+            padding-bottom: 32px;
         }
 
         .profile-image {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            background-color: #f0f0f0;
+            background-color: #e0e0e0;
         }
 
         .user-name {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
+            flex: 1;
         }
 
         .btn-edit-profile {
-            margin-left: auto;
-            padding: 10px 20px;
-            border: 1px solid #ddd;
+            padding: 12px 32px;
+            border: 2px solid #ff4444;
             background: #fff;
             border-radius: 4px;
             cursor: pointer;
             text-decoration: none;
-            color: #333;
+            color: #ff4444;
+            font-size: 14px;
+            font-weight: bold;
         }
 
         .btn-edit-profile:hover {
-            background-color: #f5f5f5;
+            background-color: #fff5f5;
         }
 
         /* タブ切り替え */
         .mypage-tabs {
             display: flex;
-            gap: 30px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #ddd;
+            gap: 48px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #ddd;
         }
 
         .mypage-tab {
-            padding: 10px 20px;
+            padding: 12px 0;
             cursor: pointer;
             border: none;
             background: none;
             font-size: 16px;
             color: #666;
+            position: relative;
+            transition: color 0.3s;
         }
 
         .mypage-tab.active {
-            color: #000;
+            color: #ff4444;
             font-weight: bold;
-            border-bottom: 3px solid #ff0000;
-            margin-bottom: -2px;
+        }
+
+        .mypage-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #ff4444;
         }
 
         /* 商品グリッド */
         .mypage-products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
         }
 
         .mypage-product-card {
@@ -78,74 +97,105 @@
 
         .mypage-product-image {
             width: 100%;
-            height: 250px;
+            aspect-ratio: 1;
             object-fit: cover;
-            border-radius: 8px;
             background-color: #f0f0f0;
+            margin-bottom: 12px;
         }
 
         .mypage-product-info {
-            padding: 10px 0;
+            padding: 0;
         }
 
         .mypage-product-name {
             font-size: 14px;
-            margin-bottom: 5px;
+            line-height: 1.4;
         }
 
         /* SOLD表示 */
         .mypage-sold-label {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #ff0000;
+            top: 8px;
+            left: 8px;
+            background-color: #ff4444;
             color: #fff;
-            padding: 5px 15px;
+            padding: 6px 16px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
         }
+
+        .no-products {
+            text-align: center;
+            padding: 60px 0;
+            color: #999;
+            font-size: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .mypage-products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mypage-products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .mypage-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-name {
+                text-align: center;
+            }
+        }
     </style>
 
-    <!-- マイページヘッダー -->
-    <div class="mypage-header">
-        @if($user->profile_image_path)
-            <img src="{{ Storage::url($user->profile_image_path) }}" alt="{{ $user->name }}" class="profile-image">
-        @else
-            <img src="/images/default-profile.png" alt="{{ $user->name }}" class="profile-image">
-        @endif
+    <div class="mypage-container">
+        <!-- マイページヘッダー -->
+        <div class="mypage-header">
+            @if($user->profile_image_path)
+                <img src="{{ Storage::url($user->profile_image_path) }}" alt="{{ $user->name }}" class="profile-image">
+            @else
+                <div class="profile-image"></div>
+            @endif
 
-        <div class="user-name">{{ $user->name }}</div>
+            <div class="user-name">{{ $user->name }}</div>
 
-        <a href="/mypage/profile" class="btn-edit-profile">プロフィールを編集</a>
-    </div>
+            <a href="{{ route('mypage.edit') }}" class="btn-edit-profile">プロフィールを編集</a>
+        </div>
 
-    <!-- タブ切り替え -->
-    <div class="mypage-tabs">
-        <button class="mypage-tab {{ $page === 'sell' ? 'active' : '' }}" onclick="location.href='/mypage?page=sell'">
-            出品した商品
-        </button>
-        <button class="mypage-tab {{ $page === 'buy' ? 'active' : '' }}" onclick="location.href='/mypage?page=buy'">
-            購入した商品
-        </button>
-    </div>
+        <!-- タブ切り替え -->
+        <div class="mypage-tabs">
+            <button class="mypage-tab {{ $page === 'sell' ? 'active' : '' }}" onclick="location.href='{{ route('mypage', ['page' => 'sell']) }}'">
+                出品した商品
+            </button>
+            <button class="mypage-tab {{ $page === 'buy' ? 'active' : '' }}" onclick="location.href='{{ route('mypage', ['page' => 'buy']) }}'">
+                購入した商品
+            </button>
+        </div>
 
-    <!-- 商品一覧 -->
-    <div class="mypage-products-grid">
-        @forelse($products as $product)
-            <a href="/item/{{ $product->id }}" class="mypage-product-card">
-                @if($product->is_sold)
-                    <div class="mypage-sold-label">Sold</div>
-                @endif
+        <!-- 商品一覧 -->
+        <div class="mypage-products-grid">
+            @forelse($products as $product)
+                <a href="{{ route('item.show', $product->id) }}" class="mypage-product-card">
+                    @if($product->is_sold)
+                        <div class="mypage-sold-label">Sold</div>
+                    @endif
 
-                <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" class="mypage-product-image">
+                    <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" class="mypage-product-image">
 
-                <div class="mypage-product-info">
-                    <div class="mypage-product-name">{{ $product->name }}</div>
-                </div>
-            </a>
-        @empty
-            <p>商品がありません</p>
-        @endforelse
+                    <div class="mypage-product-info">
+                        <div class="mypage-product-name">{{ $product->name }}</div>
+                    </div>
+                </a>
+            @empty
+                <div class="no-products" style="grid-column: 1 / -1;">商品がありません</div>
+            @endforelse
+        </div>
     </div>
 @endsection
