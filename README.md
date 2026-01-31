@@ -1,15 +1,14 @@
-cat > README.md << 'EOF'
 # coachtech フリマアプリ
 
 ## アプリケーション概要
-coachtechフリマは、アイテムの出品と購入を行うためのフリマアプリケーションです。ユーザーは商品を出品・購入でき、いいね機能やコメント機能で他のユーザーとコミュニケーションを取ることができます。
+COACHTECHフリマは、ユーザーが商品を出品・購入するためのフリマアプリケーションです。ユーザーは商品情報を出品し、購入でき、いいね機能やコメント機能で他のユーザーとコミュニケーションを取ることができます。
 
 ## 作成した目的
-COACHTECHの模擬案件として、実践に近い開発経験を積み、定義された要件を実装する能力を身につけることを目的としています。
+COACHTECHの模擬案件として、実践に近い開発経験を積み、必要な技術を養うことを目的としています。
 
 ## アプリケーションURL
 - ローカル環境: http://localhost
-- Mailpit（メールテスト）: http://localhost:8025
+- Mailpit (メールテスト): http://localhost:8025
 
 ## 機能一覧
 
@@ -21,23 +20,21 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 
 ### 商品機能
 - 商品一覧表示
-- 商品詳細表示
-- 商品検索（商品名で部分一致検索）
+- 商品詳細表示（商品名で認証が必要な検索）
+- 商品検索
 - 商品出品
 - いいね機能
 - コメント機能
 
 ### ユーザー機能
-- マイページ
 - プロフィール編集
-- 出品した商品一覧
-- 購入した商品一覧
-- いいねした商品一覧
+- マイページ（出品した商品一覧、購入した商品一覧）
 
 ### 購入機能
 - 商品購入
-- 支払い方法選択（コンビニ払い・カード払い）
+- Stripe決済（Checkout方式）
 - 配送先住所設定・変更
+- 支払い方法選択
 
 ## 使用技術
 
@@ -49,6 +46,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 ### フロントエンド
 - Blade
 - CSS
+- JavaScript
 
 ### データベース
 - MySQL 8.0
@@ -60,6 +58,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 ### その他
 - Mailpit（メールテスト）
 - Git/GitHub
+- Stripe（決済処理）
 
 ## テーブル設計
 
@@ -69,12 +68,12 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 | id | BIGINT UNSIGNED | PRIMARY KEY | ユーザーID |
 | name | VARCHAR(255) | NOT NULL | ユーザー名 |
 | email | VARCHAR(255) | NOT NULL, UNIQUE | メールアドレス |
-| email_verified_at | TIMESTAMP | NULLABLE | メール認証日時 |
 | password | VARCHAR(255) | NOT NULL | パスワード |
 | postal_code | VARCHAR(8) | NULLABLE | 郵便番号 |
 | address | TEXT | NULLABLE | 住所 |
 | building | VARCHAR(255) | NULLABLE | 建物名 |
-| profile_image_path | VARCHAR(255) | NULLABLE | プロフィール画像パス |
+| profile_image | VARCHAR(255) | NULLABLE | プロフィール画像パス |
+| email_verified_at | TIMESTAMP | NULLABLE | メール認証日時 |
 | created_at | TIMESTAMP | NOT NULL | 作成日時 |
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
@@ -142,9 +141,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
 ## ER図
-![ER図](er-diag<img width="840" height="581" alt="er-diagram" src="https://github.com/user-attachments/assets/7a980ed4-e026-4cef-9394-696b546330ab" />
-ram.png)
-
+![ER図](https://github.com/user-attachments/assets/7a98eddc-e020-4cef-9394-d9eb5de530ab)
 
 ## 環境構築手順
 
@@ -154,18 +151,18 @@ ram.png)
 
 ### 1. リポジトリのクローン
 ```bash
-git clone <リポジトリURL>![Uploading er-diagram.png…]()
-
+git clone <リポジトリURL>
 cd coachtech-freemarket
 ```
 
-### 2. 環境変数ファイルの作成
+### 2. 環境設定ファイルの作成
 ```bash
 cp .env.example .env
 ```
 
 ### 3. .envファイルの編集
-以下の項目を確認・編集してください：
+以下の項目を適切に編集してください：
+
 ```
 APP_NAME="coachtech フリマ"
 APP_URL=http://localhost
@@ -180,6 +177,9 @@ DB_PASSWORD=password
 MAIL_MAILER=smtp
 MAIL_HOST=mailpit
 MAIL_PORT=1025
+
+STRIPE_PUBLIC_KEY=<Stripeの公開鍵>
+STRIPE_SECRET_KEY=<Stripeの秘密鍵>
 ```
 
 ### 4. Dockerコンテナの起動
@@ -247,10 +247,8 @@ php artisan migrate:fresh --seed
 ## トラブルシューティング
 
 ### Dockerコンテナが起動しない
-```bash
-docker-compose down
-docker-compose up -d --build
-```
+- .envファイルのDB設定を確認
+- Dockerコンテナの起動状況を確認: `docker-compose ps`
 
 ### パーミッションエラー
 ```bash
@@ -258,13 +256,13 @@ chmod -R 777 storage bootstrap/cache
 ```
 
 ### データベース接続エラー
-- .envファイルのDB設定を確認
+- .envファイルの内容を確認
 - Dockerコンテナが起動しているか確認: `docker-compose ps`
 
 ## 注意事項
-- Stripe決済機能は開発中です
+- Stripe決済機能は本番環境で使用する前に、Stripeアカウントの本番キーに切り替える必要があります
 - 商品画像は`storage/app/public/products/`に保存されます
+- メール認証機能では、会員登録後に表示される「認証はこちらから」ボタンをクリックすると、Mailpitが開きます
 
 ## ライセンス
 このプロジェクトはCOACHTECHの教育目的で作成されています。
-EOF
