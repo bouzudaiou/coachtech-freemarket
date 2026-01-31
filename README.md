@@ -143,7 +143,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、必�
 | updated_at | TIMESTAMP | NOT NULL | 更新日時 |
 
 ## ER図
-![ER図](https://github.com/user-attachments/assets/7a98eddc-e020-4cef-9394-d9eb5de530ab)
+![ER図](./docs/er-diagram.png)
 
 ## 環境構築手順
 
