@@ -18,7 +18,7 @@ class ProductSeeder extends Seeder
                 'user_id' => 1,
                 'image_path' => 'products/udetokei.jpg',
                 'condition' => '良好',
-                'name' => 'udetokei',
+                'name' => '腕時計',
                 'brand' => 'Rolax',
                 'description' => 'スタイリッシュなデザインのメンズ腕時計',
                 'price' => 15000,

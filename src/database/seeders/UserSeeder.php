@@ -16,8 +16,9 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'taro',
             'email' => 'taro@abc.com',
-            'password' => bcrypt('123abc'),
+            'password' => bcrypt('123abc45'),
             'postal_code' => '123-4567',
+            'email_verified_at' => now(),
             'address' => '東京都渋谷区1-2-3',
         ]);
     }
