@@ -71,6 +71,27 @@ class OrderController extends Controller
         \Stripe\Stripe::setApiKey(config('stripe.secret_key'));
 
         try {
+            if ($repuest->payment_method == 'コンビニ払い') {
+                Order::create([
+                    'user_id' => $orderData['user_id'],
+                    'product_id' => $productId,
+                    'postal_code' => $orderData['postal_code'],
+                    'address' => $orderData['address'],
+                    'building' => $orderData['building'],
+                    'payment_method' => $orderData['payment_method'],
+                ]);
+
+                // 商品をis_sold = trueに更新
+                $product = Product::find($productId);
+                $product->is_sold = true;
+                $product->save();
+
+                // セッションをクリア
+                session()->forget(['order_data', 'checkout_session_id', 'address']);
+
+                // 商品一覧にリダイレクト
+                return redirect('/')->with('success', '購入が完了しました');
+            }
             // Checkout セッションを作成
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
