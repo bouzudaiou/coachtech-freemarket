@@ -67,72 +67,72 @@ class OrderController extends Controller
             'building' => $user->building,
         ]);
 
-        // Stripe初期化
-        \Stripe\Stripe::setApiKey(config('stripe.secret_key'));
-
         try {
-            if ($repuest->payment_method == 'コンビニ払い') {
+            if ($request->payment_method == 'コンビニ払い') {
                 Order::create([
-                    'user_id' => $orderData['user_id'],
-                    'product_id' => $productId,
-                    'postal_code' => $orderData['postal_code'],
-                    'address' => $orderData['address'],
-                    'building' => $orderData['building'],
-                    'payment_method' => $orderData['payment_method'],
+                    'user_id' => $user->id,
+                    'product_id' => $id,
+                    'postal_code' => $address['postal_code'],
+                    'address' => $address['address'],
+                    'building' => $address['building'] ?? '',
+                    'payment_method' => $request->payment_method,
                 ]);
 
                 // 商品をis_sold = trueに更新
-                $product = Product::find($productId);
                 $product->is_sold = true;
                 $product->save();
 
                 // セッションをクリア
-                session()->forget(['order_data', 'checkout_session_id', 'address']);
+                session()->forget('address');
 
                 // 商品一覧にリダイレクト
                 return redirect('/')->with('success', '購入が完了しました');
-            }
-            // Checkout セッションを作成
-            $session = \Stripe\Checkout\Session::create([
-                'payment_method_types' => ['card'],
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'jpy',
-                        'product_data' => [
-                            'name' => $product->name,
+            } else {
+                // Stripe初期化
+                \Stripe\Stripe::setApiKey(config('stripe.secret_key'));
+
+                // Checkout セッションを作成
+                $session = \Stripe\Checkout\Session::create([
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'price_data' => [
+                            'currency' => 'jpy',
+                            'product_data' => [
+                                'name' => $product->name,
+                            ],
+                            'unit_amount' => $product->price,
                         ],
-                        'unit_amount' => $product->price,
+                        'quantity' => 1,
+                    ]],
+                    'mode' => 'payment',
+                    'success_url' => route('purchase.success', ['product_id' => $id]),
+                    'cancel_url' => route('purchase.cancel', ['product_id' => $id]),
+                    'metadata' => [
+                        'user_id' => $user->id,
+                        'product_id' => $id,
+                        'postal_code' => $address['postal_code'],
+                        'address' => $address['address'],
+                        'building' => $address['building'] ?? '',
+                        'payment_method' => $request->payment_method,
                     ],
-                    'quantity' => 1,
-                ]],
-                'mode' => 'payment',
-                'success_url' => route('purchase.success', ['product_id' => $id]),
-                'cancel_url' => route('purchase.cancel', ['product_id' => $id]),
-                'metadata' => [
-                    'user_id' => $user->id,
-                    'product_id' => $id,
-                    'postal_code' => $address['postal_code'],
-                    'address' => $address['address'],
-                    'building' => $address['building'] ?? '',
-                    'payment_method' => $request->payment_method,
-                ],
-            ]);
+                ]);
 
-            // セッションIDとその他の情報をセッションに保存
-            session([
-                'checkout_session_id' => $session->id,
-                'order_data' => [
-                    'user_id' => $user->id,
-                    'product_id' => $id,
-                    'postal_code' => $address['postal_code'],
-                    'address' => $address['address'],
-                    'building' => $address['building'] ?? '',
-                    'payment_method' => $request->payment_method,
-                ],
-            ]);
+                // セッションIDとその他の情報をセッションに保存
+                session([
+                    'checkout_session_id' => $session->id,
+                    'order_data' => [
+                        'user_id' => $user->id,
+                        'product_id' => $id,
+                        'postal_code' => $address['postal_code'],
+                        'address' => $address['address'],
+                        'building' => $address['building'] ?? '',
+                        'payment_method' => $request->payment_method,
+                    ],
+                ]);
 
-            // StripeのCheckoutページへリダイレクト
-            return redirect($session->url);
+                // StripeのCheckoutページへリダイレクト
+                return redirect($session->url);
+            }
 
         } catch (\Exception $e) {
             return redirect()->route('purchase.show', $id)->withErrors(['payment' => '決済に失敗しました:' . $e->getMessage()]);
