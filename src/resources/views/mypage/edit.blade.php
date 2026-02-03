@@ -115,7 +115,7 @@
             <!-- ユーザー名 -->
             <div class="profile-form-group">
                 <label class="profile-label">ユーザー名</label>
-                <input type="text" name="name" class="profile-input" value="{{ old('name', $user->name) }}" placeholder="既存の値が入力されている" required>
+                <input type="text" name="name" class="profile-input" value="{{ old('name', $user->name) }}" placeholder="山田太郎" required>
             </div>
 
             <!-- 郵便番号 -->
@@ -123,7 +123,7 @@
                 <label class="profile-label">郵便番号</label>
                 <input type="text" name="postal_code" class="profile-input"
                        value="{{ old('postal_code', $user->postal_code) }}"
-                       placeholder="既存の値が入力されている" required>
+                       placeholder="123-4567" required>
             </div>
 
             <!-- 住所 -->
@@ -131,7 +131,7 @@
                 <label class="profile-label">住所</label>
                 <input type="text" name="address" class="profile-input"
                        value="{{ old('address', $user->address) }}"
-                       placeholder="既存の値が入力されている" required>
+                       placeholder="東京都渋谷区千駄ヶ谷1-2-3" required>
             </div>
 
             <!-- 建物名 -->
@@ -139,7 +139,7 @@
                 <label class="profile-label">建物名</label>
                 <input type="text" name="building" class="profile-input"
                        value="{{ old('building', $user->building) }}"
-                       placeholder="既存の値が入力されている">
+                       placeholder="代々木マンション101">
             </div>
 
             <button type="submit" class="btn-update-profile">更新する</button>
