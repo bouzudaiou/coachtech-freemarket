@@ -302,7 +302,11 @@
 
             @foreach($product->comments as $comment)
                 <div class="comment-item">
-                    <div class="comment-avatar"></div>
+                    <div class="comment-avatar">
+                        @if($comment->user->profile_image_path)
+                            <img src="{{ asset('storage/' . $comment->user->profile_image_path) }}" alt="プロフィール画像">
+                        @endif
+                    </div>
                     <div class="comment-content">
                         <div class="comment-user">{{ $comment->user->name }}</div>
                         <div class="comment-text">{{ $comment->content }}</div>

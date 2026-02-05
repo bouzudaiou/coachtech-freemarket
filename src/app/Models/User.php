@@ -17,7 +17,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'email', 'password', 'profile_image_path', 'postal_code', 'address', 'building'];
+    protected $fillable = ['name', 'email', 'password', 'profile_image_path', 'postal_code', 'address', 'building', 'is_profile_completed'];
 
     //出品した商品との関係（一対多）
     public function products()
@@ -61,5 +61,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_profile_completed' => 'boolean',
     ];
 }

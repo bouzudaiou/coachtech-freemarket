@@ -166,7 +166,7 @@
 
             <div class="user-name">{{ $user->name }}</div>
 
-            <a href="{{ route('mypage.edit') }}" class="btn-edit-profile">プロフィールを編集</a>
+            <a href="{{ route('mypage.edit') }}?from=mypage" class="btn-edit-profile">プロフィールを編集</a>
         </div>
 
         <!-- タブ切り替え -->

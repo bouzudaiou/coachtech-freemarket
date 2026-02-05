@@ -96,6 +96,15 @@
 
     <div class="profile-form-container">
         <h1 class="profile-form-title">プロフィール設定</h1>
+        @if($errors->any())
+            <div class="errors">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <form action="{{ route('mypage.update') }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf

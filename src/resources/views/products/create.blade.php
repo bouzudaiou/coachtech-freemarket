@@ -185,6 +185,12 @@
         .btn-submit-product:hover {
             background-color: #dd3333;
         }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 8px;
+        }
     </style>
 
     <div class="product-form-container">
@@ -224,6 +230,9 @@
                             </label>
                         @endforeach
                     </div>
+                    @error('category_id')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- 商品の状態 -->
@@ -236,6 +245,9 @@
                         <option value="やや傷や汚れあり" {{ old('condition') === 'やや傷や汚れあり' ? 'selected' : '' }}>やや傷や汚れあり</option>
                         <option value="状態が悪い" {{ old('condition') === '状態が悪い' ? 'selected' : '' }}>状態が悪い</option>
                     </select>
+                    @error('condition')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
@@ -247,18 +259,27 @@
                 <div class="form-group">
                     <label class="form-label">商品名</label>
                     <input type="text" name="name" class="form-input" value="{{ old('name') }}" required>
+                    @error('name')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- ブランド名 -->
                 <div class="form-group">
                     <label class="form-label">ブランド名</label>
                     <input type="text" name="brand" class="form-input" value="{{ old('brand') }}">
+                    @error('brand')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- 商品の説明 -->
                 <div class="form-group">
                     <label class="form-label">商品の説明</label>
                     <textarea name="description" class="form-textarea" required>{{ old('description') }}</textarea>
+                    @error('description')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
@@ -271,6 +292,9 @@
                         <span class="price-symbol">¥</span>
                         <input type="number" name="price" class="form-input" value="{{ old('price') }}" min="0" required>
                     </div>
+                    @error('price')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 

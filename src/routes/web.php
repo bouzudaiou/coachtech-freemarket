@@ -25,7 +25,7 @@ Route::get('/', [ProductController::class, 'index'])->name('products.index');
 Route::get('/item/{id}', [ProductController::class, 'show'])->name('item.show');
 
 // 認証必要（グループ化）
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'profile.completed'])->group(function () {
     // マイページ
     Route::get('/mypage', [MypageController::class, 'index'])->name('mypage');
 

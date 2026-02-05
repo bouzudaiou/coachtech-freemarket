@@ -119,11 +119,11 @@
         <!-- タブナビゲーション -->
         <div class="products-tabs">
             @auth
-                <a href="{{ route('products.index', ['tab' => 'recommend']) }}"
+                <a href="{{ route('products.index', ['tab' => 'recommend', 'keyword' => $keyword]) }}"
                    class="products-tab {{ $tab === 'recommend' ? 'active' : '' }}">
                     おすすめ
                 </a>
-                <a href="{{ route('products.index', ['tab' => 'mylist']) }}"
+                <a href="{{ route('products.index', ['tab' => 'mylist', 'keyword' => $keyword]) }}"
                    class="products-tab {{ $tab === 'mylist' ? 'active' : '' }}">
                     マイリスト
                 </a>
