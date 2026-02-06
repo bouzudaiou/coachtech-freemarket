@@ -18,7 +18,7 @@ class EnsureProfileCompleted
         $user = auth()->user();
 
         // プロフィール完了済みユーザーがプロフィール設定画面にいる場合
-        if($user && $user->is_profile_completed && $request->path() === 'mypage/profile'){
+        if($user && $user->is_profile_completed && $request->path() === 'mypage/profile' && $request->isMethod('GET')){
             // マイページから来た場合（?from=mypage）→ 編集を許可
             if($request->query('from') === 'mypage'){
                 return $next($request);
