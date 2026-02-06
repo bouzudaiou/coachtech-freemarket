@@ -131,4 +131,6 @@ return [
         ],
     ],
 
+    'client_url' => env('MAIL_CLIENT_URL', 'http://localhost:8025'),
+
 ];

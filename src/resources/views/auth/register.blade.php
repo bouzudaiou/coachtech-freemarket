@@ -2,71 +2,11 @@
 
 @section('title', '会員登録 - COACHTECH')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+@endsection
+
 @section('content')
-    <style>
-        .auth-container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 40px;
-            border-radius: 8px;
-        }
-
-        .auth-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .auth-form-group {
-            margin-bottom: 20px;
-        }
-
-        .auth-label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .auth-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .btn-auth {
-            width: 100%;
-            padding: 15px;
-            background-color: #ff0000;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .btn-auth:hover {
-            background-color: #cc0000;
-        }
-
-        .auth-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        .auth-link a {
-            color: #ff0000;
-            text-decoration: none;
-        }
-    </style>
-
     <div class="auth-container">
         <h1 class="auth-title">会員登録</h1>
 

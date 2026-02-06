@@ -199,7 +199,7 @@
                     </div>
                     <div class="summary-row">
                         <span class="summary-label">支払い方法</span>
-                        <span class="summary-value" id="selected-payment">コンビニ払い</span>
+                        <span class="summary-value" id="selected-payment">選択してください</span>
                     </div>
                     <button type="submit" class="btn-purchase-submit">購入する</button>
                 </div>

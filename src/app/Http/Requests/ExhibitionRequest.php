@@ -25,7 +25,8 @@ class ExhibitionRequest extends FormRequest
             'name' => 'required',
             'description' => 'required|string|max:255',
             'image_path' => 'required|image|mimes:jpeg,png',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id',
             'condition' => 'required|in:良好,目立った傷や汚れなし,やや傷や汚れあり,状態が悪い',
             'price' => 'required|numeric|min:0',
         ];

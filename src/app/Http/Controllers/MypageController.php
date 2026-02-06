@@ -38,7 +38,7 @@ class MypageController extends Controller
         // 画像がアップロードされた場合は保存、なければ既存のパスを使う
         if ($request->hasFile('profile_image')) {
             $path = $request->file('profile_image')->store('profiles', 'public');
-            } else {
+        } else {
             $path = $user->profile_image_path;
         }
 

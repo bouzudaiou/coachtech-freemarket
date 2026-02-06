@@ -56,7 +56,7 @@
             下記より再送信してください。
         </div>
 
-        <a href="http://localhost:8025" target="_blank" class="btn-resend" style="margin-bottom: 20px;">認証はこちらから</a>
+        <a href="{{ config('mail.client_url', 'http://localhost:8025') }}" target="_blank" class="btn-resend" style="margin-bottom: 20px;">認証はこちらから</a>
 
         <form action="{{ route('verification.send') }}" method="POST">
             @csrf
