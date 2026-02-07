@@ -142,6 +142,12 @@
                 position: static;
             }
         }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 8px;
+        }
     </style>
 
     <form action="{{ route('purchase.process', $product->id) }}" method="POST" id="purchase-form" novalidate>
@@ -151,7 +157,8 @@
             <div class="purchase-left">
                 <!-- 商品情報 -->
                 <div class="purchase-product">
-                    <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" class="purchase-product-image">
+                    <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}"
+                         class="purchase-product-image">
                     <div class="purchase-product-info">
                         <div class="purchase-product-name">{{ $product->name }}</div>
                         <div class="purchase-product-price">¥{{ number_format($product->price) }}</div>
@@ -163,9 +170,16 @@
                     <h3 class="section-title">支払い方法</h3>
                     <select name="payment_method" class="form-select" required>
                         <option value="">選択してください</option>
-                        <option value="コンビニ払い" {{ old('payment_method') === 'コンビニ払い' ? 'selected' : '' }}>コンビニ払い</option>
-                        <option value="カード払い" {{ old('payment_method') === 'カード払い' ? 'selected' : '' }}>カード払い</option>
+                        <option value="コンビニ払い" {{ old('payment_method') === 'コンビニ払い' ? 'selected' : '' }}>
+                            コンビニ払い
+                        </option>
+                        <option value="カード払い" {{ old('payment_method') === 'カード払い' ? 'selected' : '' }}>
+                            カード払い
+                        </option>
                     </select>
+                    @error('payment_method')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- 配送先 -->
@@ -209,7 +223,7 @@
 
     <script>
         // 支払い方法の選択を右側にも反映
-        document.querySelector('select[name="payment_method"]').addEventListener('change', function() {
+        document.querySelector('select[name="payment_method"]').addEventListener('change', function () {
             const selectedText = this.options[this.selectedIndex].text;
             document.getElementById('selected-payment').textContent = selectedText || '-';
         });

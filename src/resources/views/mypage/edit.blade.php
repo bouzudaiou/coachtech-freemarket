@@ -92,19 +92,18 @@
         .btn-update-profile:hover {
             background-color: #dd3333;
         }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
     </style>
 
     <div class="profile-form-container">
         <h1 class="profile-form-title">プロフィール設定</h1>
-        @if($errors->any())
-            <div class="errors">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+
 
         <form action="{{ route('mypage.update') }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
@@ -112,19 +111,28 @@
             <!-- プロフィール画像プレビュー -->
             <div class="profile-image-section">
                 @if($user->profile_image_path)
-                    <img src="{{ Storage::url($user->profile_image_path) }}" alt="{{ $user->name }}" class="current-profile-image" id="preview-image">
+                    <img src="{{ Storage::url($user->profile_image_path) }}" alt="{{ $user->name }}"
+                         class="current-profile-image" id="preview-image">
                 @else
                     <div class="current-profile-image" id="preview-image"></div>
                 @endif
 
                 <label for="profile-image-input" class="btn-select-image">画像を選択する</label>
-                <input type="file" name="profile_image" id="profile-image-input" class="file-input-hidden" accept="image/jpeg,image/png">
+                <input type="file" name="profile_image" id="profile-image-input" class="file-input-hidden"
+                       accept="image/jpeg,image/png">
+                @error('profile_image')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- ユーザー名 -->
             <div class="profile-form-group">
                 <label class="profile-label">ユーザー名</label>
-                <input type="text" name="name" class="profile-input" value="{{ old('name', $user->name) }}" placeholder="山田太郎" required>
+                <input type="text" name="name" class="profile-input" value="{{ old('name', $user->name) }}"
+                       placeholder="山田太郎" required>
+                @error('name')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- 郵便番号 -->
@@ -133,6 +141,9 @@
                 <input type="text" name="postal_code" class="profile-input"
                        value="{{ old('postal_code', $user->postal_code) }}"
                        placeholder="123-4567" required>
+                @error('postal_code')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- 住所 -->
@@ -141,6 +152,9 @@
                 <input type="text" name="address" class="profile-input"
                        value="{{ old('address', $user->address) }}"
                        placeholder="東京都渋谷区千駄ヶ谷1-2-3" required>
+                @error('address')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- 建物名 -->
@@ -149,6 +163,9 @@
                 <input type="text" name="building" class="profile-input"
                        value="{{ old('building', $user->building) }}"
                        placeholder="代々木マンション101">
+                @error('building')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <button type="submit" class="btn-update-profile">更新する</button>
@@ -157,11 +174,11 @@
 
     <script>
         // 画像選択時のプレビュー表示
-        document.getElementById('profile-image-input').addEventListener('change', function(e) {
+        document.getElementById('profile-image-input').addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const preview = document.getElementById('preview-image');
                     preview.style.backgroundImage = `url(${e.target.result})`;
                     preview.style.backgroundSize = 'cover';

@@ -53,6 +53,12 @@
         .btn-update:hover {
             background-color: #cc0000;
         }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 8px;
+        }
     </style>
 
     <div class="address-form-container">
@@ -67,6 +73,9 @@
                 <input type="text" name="postal_code" class="address-input"
                        value="{{ old('postal_code', is_array($address) ? ($address['postal_code'] ?? '') : $user->postal_code) }}"
                        placeholder="123-4567" required>
+                @error('postal_code')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- 住所 -->
@@ -74,14 +83,22 @@
                 <label class="address-label">住所</label>
                 <input type="text" name="address" class="address-input"
                        value="{{ old('address', is_array($address) ? ($address['address'] ?? '') : $user->address) }}"
+                       placeholder="東京都渋谷区千駄ヶ谷1-2-3"
                        required>
+                @error('address')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- 建物名 -->
             <div class="address-form-group">
                 <label class="address-label">建物名</label>
                 <input type="text" name="building" class="address-input"
-                       value="{{ old('building', is_array($address) ? ($address['building'] ?? '') : $user->building) }}">
+                       value="{{ old('building', is_array($address) ? ($address['building'] ?? '') : $user->building) }}"
+                placeholder="代々木マンション101">
+                @error('building')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <button type="submit" class="btn-update">更新する</button>

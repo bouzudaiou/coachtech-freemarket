@@ -120,7 +120,8 @@
         @auth
             <!-- 検索フォーム -->
             <form action="/" method="GET" class="search-form" novalidate>
-                <input type="text" name="keyword" class="search-input" placeholder="なにをお探しですか？" value="{{ request('keyword') }}">
+                <input type="text" name="keyword" class="search-input" placeholder="なにをお探しですか？"
+                       value="{{ request('keyword') }}">
             </form>
 
             <a href="{{ route('logout') }}"
@@ -136,7 +137,8 @@
         @else
             <!-- 検索フォーム（ログイン前） -->
             <form action="/" method="GET" class="search-form" novalidate>
-                <input type="text" name="keyword" class="search-input" placeholder="なにをお探しですか？" value="{{ request('keyword') }}">
+                <input type="text" name="keyword" class="search-input" placeholder="なにをお探しですか？"
+                       value="{{ request('keyword') }}">
             </form>
 
             <a href="/login">ログイン</a>
@@ -147,16 +149,6 @@
 
 <!-- メインコンテンツ -->
 <main class="container">
-    @if ($errors->any())
-        <div class="errors">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     @yield('content')
 </main>
 </body>

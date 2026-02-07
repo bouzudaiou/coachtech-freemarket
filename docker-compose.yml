@@ -47,8 +47,8 @@ services:
     ports:
       - 8080:80
 
-  mailpit:
-    image: 'axllent/mailpit:latest'
+  mailhog:
+    image: mailhog/mailhog:latest
     platform: linux/amd64
     ports:
       - '1025:1025'

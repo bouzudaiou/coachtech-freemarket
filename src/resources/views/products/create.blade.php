@@ -204,7 +204,8 @@
                 <div class="section-label">商品画像</div>
                 <div class="image-upload-area">
                     <img id="image-preview" class="image-preview" alt="商品画像プレビュー">
-                    <input type="file" name="image_path" id="image-input" class="image-upload-input" accept="image/jpeg,image/png" required>
+                    <input type="file" name="image_path" id="image-input" class="image-upload-input"
+                           accept="image/jpeg,image/png" required>
                     <label for="image-input" id="select-image-btn" class="btn-select-image-area">
                         画像を選択する
                     </label>
@@ -241,9 +242,17 @@
                     <select name="condition" class="form-select" required>
                         <option value="">選択してください</option>
                         <option value="良好" {{ old('condition') === '良好' ? 'selected' : '' }}>良好</option>
-                        <option value="目立った傷や汚れなし" {{ old('condition') === '目立った傷や汚れなし' ? 'selected' : '' }}>目立った傷や汚れなし</option>
-                        <option value="やや傷や汚れあり" {{ old('condition') === 'やや傷や汚れあり' ? 'selected' : '' }}>やや傷や汚れあり</option>
-                        <option value="状態が悪い" {{ old('condition') === '状態が悪い' ? 'selected' : '' }}>状態が悪い</option>
+                        <option
+                            value="目立った傷や汚れなし" {{ old('condition') === '目立った傷や汚れなし' ? 'selected' : '' }}>
+                            目立った傷や汚れなし
+                        </option>
+                        <option
+                            value="やや傷や汚れあり" {{ old('condition') === 'やや傷や汚れあり' ? 'selected' : '' }}>
+                            やや傷や汚れあり
+                        </option>
+                        <option value="状態が悪い" {{ old('condition') === '状態が悪い' ? 'selected' : '' }}>
+                            状態が悪い
+                        </option>
                     </select>
                     @error('condition')
                     <p class="error-message">{{ $message }}</p>
@@ -290,7 +299,8 @@
                     <label class="form-label">販売価格</label>
                     <div class="price-input-wrapper">
                         <span class="price-symbol">¥</span>
-                        <input type="number" name="price" class="form-input" value="{{ old('price') }}" min="0" required>
+                        <input type="number" name="price" class="form-input" value="{{ old('price') }}" min="0"
+                               required>
                     </div>
                     @error('price')
                     <p class="error-message">{{ $message }}</p>
@@ -310,11 +320,11 @@
         const selectBtn = document.getElementById('select-image-btn');
         const uploadArea = document.querySelector('.image-upload-area');
 
-        imageInput.addEventListener('change', function(e) {
+        imageInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     imagePreview.src = e.target.result;
                     imagePreview.style.display = 'block';
                     selectBtn.style.display = 'none';
@@ -333,7 +343,7 @@
             }
 
             // checkboxの状態変化を監視（labelのクリックは標準機能に任せる）
-            checkbox.addEventListener('change', function() {
+            checkbox.addEventListener('change', function () {
                 if (this.checked) {
                     tag.classList.add('selected');
                 } else {

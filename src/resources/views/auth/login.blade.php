@@ -17,12 +17,18 @@
             <div class="auth-form-group">
                 <label class="auth-label">メールアドレス</label>
                 <input type="email" name="email" class="auth-input" value="{{ old('email') }}" required>
+                @error('email')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- パスワード -->
             <div class="auth-form-group">
                 <label class="auth-label">パスワード</label>
                 <input type="password" name="password" class="auth-input" required>
+                @error('password')
+                <p class="error-message">{{ $message }}</p>
+                @enderror
             </div>
 
             <button type="submit" class="btn-auth">ログインする</button>

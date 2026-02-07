@@ -59,3 +59,9 @@
     color: #ff0000;
     text-decoration: none;
 }
+
+.error-message {
+    color: #ff4444;
+    font-size: 12px;
+    margin-top: 8px;
+}

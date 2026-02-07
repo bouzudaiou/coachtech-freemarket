@@ -214,13 +214,20 @@
                 gap: 32px;
             }
         }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 8px;
+        }
     </style>
 
     <div class="product-detail-container">
         <div class="product-detail">
             <!-- 商品画像 -->
             <div>
-                <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" class="product-image-large">
+                <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}"
+                     class="product-image-large">
             </div>
 
             <!-- 商品情報 -->
@@ -232,16 +239,20 @@
                 <!-- いいね・コメント -->
                 <div class="product-actions">
                     @auth
-                        <form action="{{ route('item.like', $product->id) }}" method="POST" style="display: inline;" novalidate>
+                        <form action="{{ route('item.like', $product->id) }}" method="POST" style="display: inline;"
+                              novalidate>
                             @csrf
                             <button type="submit" class="action-btn">
                                 @if($product->likedUsers->contains(auth()->id()))
                                     <svg class="action-icon" viewBox="0 0 24 24" fill="#ff4444">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                        <path
+                                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                 @else
-                                    <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
-                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                    <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="#666"
+                                         stroke-width="2">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                                     </svg>
                                 @endif
                                 <span>{{ $product->likedUsers->count() }}</span>
@@ -250,7 +261,8 @@
                     @else
                         <div class="action-btn">
                             <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                <path
+                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                             </svg>
                             <span>{{ $product->likedUsers->count() }}</span>
                         </div>
@@ -304,7 +316,8 @@
                 <div class="comment-item">
                     <div class="comment-avatar">
                         @if($comment->user->profile_image_path)
-                            <img src="{{ asset('storage/' . $comment->user->profile_image_path) }}" alt="プロフィール画像">
+                            <img src="{{ asset('storage/' . $comment->user->profile_image_path) }}"
+                                 alt="プロフィール画像">
                         @endif
                     </div>
                     <div class="comment-content">
@@ -320,7 +333,11 @@
                 @auth
                     <form action="{{ route('item.comment', $product->id) }}" method="POST" novalidate>
                         @csrf
-                        <textarea name="content" class="comment-textarea" placeholder="コメントを入力してください" required></textarea>
+                        <textarea name="content" class="comment-textarea" placeholder="コメントを入力してください"
+                                  required></textarea>
+                        @error('content')
+                        <p class="error-message">{{ $message }}</p>
+                        @enderror
                         <button type="submit" class="btn-submit-comment">コメントを送信する</button>
                     </form>
                 @else
