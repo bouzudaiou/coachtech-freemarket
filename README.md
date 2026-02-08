@@ -10,13 +10,13 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 ## アプリケーションURL
 - アプリケーション：http://localhost/
 - phpMyAdmin：http://localhost:8080/
-- Mailpit（メールテスト）：http://localhost:8025/
+- Mailhog（メールテスト）：http://localhost:8025/
 
 ## 機能一覧
 
 ### 認証機能
 - 会員登録（Laravel Fortify）
-- メール認証（Mailpit使用）
+- メール認証（Mailhog使用）
 - ログイン
 - ログアウト
 
@@ -47,7 +47,7 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 - nginx 1.21.1
 - Docker / Docker Compose
 - Stripe
-- Mailpit
+- Mailhog
 
 ## テーブル設計
 
@@ -174,6 +174,50 @@ COACHTECHの模擬案件として、実践に近い開発経験を積み、定�
 | 名前 | 会員登録時に作成したものを使用 |
 
 ## 開発者向け情報
+
+### テスト実行
+
+#### テスト実装状況
+本プロジェクトでは、PHPUnit によるFeatureテストを実装しています。
+
+#### テスト実行方法
+```bash
+# PHPコンテナに入る
+docker-compose exec php bash
+
+# 全テスト実行
+php artisan test
+
+# 特定のテストファイルを実行
+php artisan test --filter=RegisterTest
+```
+
+#### テスト一覧
+| テストファイル | テスト内容 | テスト数 |
+|--------------|-----------|---------|
+| ExampleTest | トップページ表示 | 1 |
+| RegisterTest | 会員登録バリデーション・登録処理 | 6 |
+| LoginTest | ログインバリデーション・認証処理 | 4 |
+| LogoutTest | ログアウト処理 | 1 |
+| ProductListTest | 商品一覧表示・Soldラベル・自分の商品非表示 | 3 |
+| ProductDetailTest | 商品詳細表示・カテゴリ表示 | 2 |
+| ProductSearchTest | 商品検索・マイリスト検索 | 2 |
+| ProductExhibitionTest | 商品出品処理 | 1 |
+| LikeTest | いいね追加・解除 | 2 |
+| MylistTest | マイリスト表示・いいね解除後の非表示 | 2 |
+| CommentTest | コメント送信・表示・バリデーション | 4 |
+| UserProfileTest | プロフィール表示・出品/購入商品一覧 | 1 |
+| ProfileUpdateTest | プロフィール編集画面の表示 | 1 |
+| PurchaseTest | 購入処理・Soldラベル・購入履歴 | 3 |
+| PaymentMethodTest | 支払い方法選択表示 | 1 |
+| AddressUpdateTest | 配送先住所変更・注文への反映 | 2 |
+
+**合計：36テストケース**
+
+#### 既知の注意事項
+- Stripe決済のテストは、外部API連携のためFeatureテストではOrder直接作成で代替しています
+- 画像アップロードテストは、GD拡張が未インストールのため `UploadedFile::fake()->create()` を使用しています
+- 支払い方法のJavaScript動的切り替えはFeatureテストでは検証できないため、選択肢の存在確認のみ実施しています
 
 ### キャッシュクリア
 ```bash
